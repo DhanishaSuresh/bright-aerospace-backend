@@ -17,6 +17,7 @@ class User(AbstractUser):
         default='student'
     )
 
+
     email = models.EmailField(unique=True)
 
     def clean(self):
