@@ -20,7 +20,7 @@ from .validators import validate_strong_password
 @api_view(['POST'])
 def register_user(request):
     """
-    API to register a new user (student/company/admin)
+    API to register a new user (defaults to student)
     """
 
     data = request.data
@@ -28,7 +28,7 @@ def register_user(request):
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
-    role = data.get("role", "student")
+    role = "student" # Default role for security, never allow user to set their role during registration.
 
     
     if not username or not email or not password:

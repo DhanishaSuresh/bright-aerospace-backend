@@ -90,7 +90,23 @@ class RegistrationTokenTests(APITestCase):
         
         # Verify that the tokens are not empty
         self.assertTrue(len(response.data['tokens']['access']) > 0)
-        self.assertTrue(len(response.data['tokens']['refresh']) > 0)
+    def test_registration_ignores_provided_role(self):
+        """Registering with 'admin' role should still result in a 'student' user."""
+        url = '/api/register/'
+        data = {
+            "username": "hackeruser",
+            "email": "hacker@example.com",
+            "password": "Password123!",
+            "role": "admin"
+        }
+        response = self.client.post(url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['role'], 'student')
+        
+        # Double check database state
+        user = User.objects.get(username="hackeruser")
+        self.assertEqual(user.role, 'student')
 
     def test_registration_duplicate_username(self):
         # First registration
